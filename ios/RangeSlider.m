@@ -410,58 +410,115 @@ UIFont *labelFont;
             CGContextFillPath(context);
         }
     }
+    
+    [self drawLabel:rect _activeThumb:THUMB_LOW labelTextAttributes:labelTextAttributes lowX:lowX highX:highX labelHeight:labelHeight width:width context:context labelTextHeight:labelTextHeight labelBorderColor:labelBorderColor labelBackgroundColor:labelBackgroundColor];
+    [self drawLabel:rect _activeThumb:THUMB_HIGH labelTextAttributes:labelTextAttributes lowX:lowX highX:highX labelHeight:labelHeight width:width context:context labelTextHeight:labelTextHeight labelBorderColor:labelBorderColor labelBackgroundColor:labelBackgroundColor];
 
-    if ([_labelStyle isEqualToString:NONE] || _activeThumb == THUMB_NONE) {
-        return;
-    }
 
-    NSString *text = [self formatLabelText:_activeThumb == THUMB_LOW ? _lowValue : _highValue];
-    textRect = [text boundingRectWithSize:CGSizeMake(500, 500) options:NSStringDrawingUsesLineFragmentOrigin attributes:labelTextAttributes context:nil];
-    CGFloat labelTextWidth = textRect.size.width;
-    CGFloat labelWidth = labelTextWidth + 2 * _labelPadding + 2 * _labelBorderWidth;
-    CGFloat cx = _activeThumb == THUMB_LOW ? lowX : highX;
-
-    if (labelWidth < _labelTailHeight / SQRT_3_2) {
-        labelWidth = _labelTailHeight / SQRT_3_2;
-    }
-
-    CGFloat y = labelHeight;
-
-    // Bounds of outer rectangular part
-    CGFloat top = 0;
-    CGFloat left = cx - labelWidth / 2;
-    CGFloat right = left + labelWidth;
-    CGFloat bottom = top + labelHeight - _labelTailHeight;
-    CGFloat overflowOffset = 0;
-
-    if (left < 0) {
-        overflowOffset = -left;
-    } else if (right > width) {
-        overflowOffset = width - right;
-    }
-
-    left += overflowOffset;
-    right += overflowOffset;
-    [self preparePath:context x:cx y:y left:left top:top right:right bottom:bottom tailHeight:_labelTailHeight];
-    [labelBorderColor setFill];
-    CGContextFillPath(context);
-
-    y = 2 * _labelPadding + labelTextHeight + _labelTailHeight;
-
-    // Bounds of inner rectangular part
-    top = _labelBorderWidth;
-    left = cx - labelTextWidth / 2 - _labelPadding + overflowOffset;
-    right = left + labelTextWidth + 2 * _labelPadding;
-    bottom = _labelBorderWidth + 2 * _labelPadding + labelTextHeight;
-
-    [self preparePath:context x:cx y:y left:left top:top right:right bottom:bottom tailHeight:_labelTailHeight - _labelBorderWidth];
-    [labelBackgroundColor setFill];
-    CGContextFillPath(context);
-
-    CGContextSetFontSize(context, _textSize);
-    [text drawAtPoint:CGPointMake(cx - labelTextWidth / 2 + overflowOffset, _labelBorderWidth + _labelPadding)
-       withAttributes:labelTextAttributes];
+//    if ([_labelStyle isEqualToString:NONE] || _activeThumb == THUMB_NONE) {
+//        return;
+//    }
+//
+//    NSString *text = [self formatLabelText:_activeThumb == THUMB_LOW ? _lowValue : _highValue];
+//    textRect = [text boundingRectWithSize:CGSizeMake(500, 500) options:NSStringDrawingUsesLineFragmentOrigin attributes:labelTextAttributes context:nil];
+//    CGFloat labelTextWidth = textRect.size.width;
+//    CGFloat labelWidth = labelTextWidth + 2 * _labelPadding + 2 * _labelBorderWidth;
+//    CGFloat cx = _activeThumb == THUMB_LOW ? lowX : highX;
+//
+//    if (labelWidth < _labelTailHeight / SQRT_3_2) {
+//        labelWidth = _labelTailHeight / SQRT_3_2;
+//    }
+//
+//    CGFloat y = labelHeight;
+//
+//    // Bounds of outer rectangular part
+//    CGFloat top = 0;
+//    CGFloat left = cx - labelWidth / 2;
+//    CGFloat right = left + labelWidth;
+//    CGFloat bottom = top + labelHeight - _labelTailHeight;
+//    CGFloat overflowOffset = 0;
+//
+//    if (left < 0) {
+//        overflowOffset = -left;
+//    } else if (right > width) {
+//        overflowOffset = width - right;
+//    }
+//
+//    left += overflowOffset;
+//    right += overflowOffset;
+//    [self preparePath:context x:cx y:y left:left top:top right:right bottom:bottom tailHeight:_labelTailHeight];
+//    [labelBorderColor setFill];
+//    CGContextFillPath(context);
+//
+//    y = 2 * _labelPadding + labelTextHeight + _labelTailHeight;
+//
+//    // Bounds of inner rectangular part
+//    top = _labelBorderWidth;
+//    left = cx - labelTextWidth / 2 - _labelPadding + overflowOffset;
+//    right = left + labelTextWidth + 2 * _labelPadding;
+//    bottom = _labelBorderWidth + 2 * _labelPadding + labelTextHeight;
+//
+//    [self preparePath:context x:cx y:y left:left top:top right:right bottom:bottom tailHeight:_labelTailHeight - _labelBorderWidth];
+//    [labelBackgroundColor setFill];
+//    CGContextFillPath(context);
+//
+//    CGContextSetFontSize(context, _textSize);
+//    [text drawAtPoint:CGPointMake(cx - labelTextWidth / 2 + overflowOffset, _labelBorderWidth + _labelPadding)
+//       withAttributes:labelTextAttributes];
     //CGContextShowTextAtPoint(context, cx - labelTextWidth / 2 + overflowOffset, _labelBorderWidth + _labelPadding, [text UTF8String], text.length);
+}
+
+- (void)drawLabel:(CGRect)rect _activeThumb:(int)_activeThumb labelTextAttributes:(id)labelTextAttributes lowX:(CGFloat)lowX highX:(CGFloat)highX labelHeight:(CGFloat)labelHeight width:(CGFloat)width context:(CGContextRef)context labelTextHeight:(CGFloat)labelTextHeight labelBorderColor:(UIColor*)labelBorderColor labelBackgroundColor:(UIColor*)labelBackgroundColor   {
+    
+    NSString *text = [self formatLabelText:_activeThumb == THUMB_LOW ? _lowValue : _highValue];
+    
+       CGRect textRect;
+       textRect = [text boundingRectWithSize:CGSizeMake(500, 500) options:NSStringDrawingUsesLineFragmentOrigin attributes:labelTextAttributes context:nil];
+       CGFloat labelTextWidth = textRect.size.width;
+       CGFloat labelWidth = labelTextWidth + 2 * _labelPadding + 2 * _labelBorderWidth;
+       CGFloat cx = _activeThumb == THUMB_LOW ? lowX : highX;
+
+       if (labelWidth < _labelTailHeight / SQRT_3_2) {
+           labelWidth = _labelTailHeight / SQRT_3_2;
+       }
+
+       CGFloat y = labelHeight;
+
+       // Bounds of outer rectangular part
+       CGFloat top = 0;
+       CGFloat left = cx - labelWidth / 2;
+       CGFloat right = left + labelWidth;
+       CGFloat bottom = top + labelHeight - _labelTailHeight;
+       CGFloat overflowOffset = 0;
+
+       if (left < 0) {
+           overflowOffset = -left;
+       } else if (right > width) {
+           overflowOffset = width - right;
+       }
+
+       left += overflowOffset;
+       right += overflowOffset;
+       [self preparePath:context x:cx y:y left:left top:top right:right bottom:bottom tailHeight:_labelTailHeight];
+       [labelBorderColor setFill];
+       CGContextFillPath(context);
+
+       y = 2 * _labelPadding + labelTextHeight + _labelTailHeight;
+
+       // Bounds of inner rectangular part
+       top = _labelBorderWidth;
+       left = cx - labelTextWidth / 2 - _labelPadding + overflowOffset;
+       right = left + labelTextWidth + 2 * _labelPadding;
+       bottom = _labelBorderWidth + 2 * _labelPadding + labelTextHeight;
+
+       [self preparePath:context x:cx y:y left:left top:top right:right bottom:bottom tailHeight:_labelTailHeight - _labelBorderWidth];
+       [labelBackgroundColor setFill];
+       CGContextFillPath(context);
+
+       CGContextSetFontSize(context, _textSize);
+       [text drawAtPoint:CGPointMake(cx - labelTextWidth / 2 + overflowOffset, _labelBorderWidth + _labelPadding)
+          withAttributes:labelTextAttributes];
+    
 }
 
 - (void)preparePath:(CGContextRef)context x:(CGFloat)x y:(CGFloat)y left:(CGFloat)left top:(CGFloat)top right:(CGFloat)right bottom:(CGFloat)bottom tailHeight:(CGFloat)tailHeight {
