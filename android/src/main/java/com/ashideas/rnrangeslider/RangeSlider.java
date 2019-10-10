@@ -5,9 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.support.annotation.Nullable;
-import android.support.v4.math.MathUtils;
-import android.support.v4.view.ViewCompat;
+import androidx.annotation.Nullable;
+import androidx.core.math.MathUtils;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -434,10 +434,15 @@ public class RangeSlider extends View {
             }
         }
 
-        if (labelStyle!=LabelStyle.ALWAYS && labelStyle == LabelStyle.NONE || activeThumb == THUMB_NONE ) {
-            return;
-        }
+//        if (labelStyle!=LabelStyle.ALWAYS && labelStyle == LabelStyle.NONE || activeThumb == THUMB_NONE ) {
+//            return;
+//        }
+        this.drawLabel(canvas, lowX, highX, labelHeight, width, labelTextHeight, THUMB_LOW);
+        this.drawLabel(canvas, lowX, highX, labelHeight, width, labelTextHeight, THUMB_HIGH);
 
+    }
+
+    private void drawLabel(Canvas canvas, float lowX, float highX, float labelHeight, float width, float labelTextHeight, Integer activeThumb) {
         String text = formatLabelText(activeThumb == THUMB_LOW ? lowValue : highValue);
         float labelTextWidth = labelTextPaint.measureText(text);
         float labelWidth = labelTextWidth + 2 * labelPadding + 2 * labelBorderWidth;
@@ -481,7 +486,9 @@ public class RangeSlider extends View {
         canvas.drawPath(labelPath, labelPaint);
 
         canvas.drawText(text, cx - labelTextWidth / 2 + overflowOffset, labelBorderWidth + labelPadding - labelTextPaint.ascent(), labelTextPaint);
+
     }
+
 
     private void drawThumb(Canvas canvas, float x, float y) {
         canvas.drawCircle(x, y, thumbRadius, thumbBorderPaint);
