@@ -18,6 +18,7 @@ public class RangeSlider extends View {
 
     public enum LabelStyle {
         BUBBLE,
+        ALWAYS,
         NONE
     }
 
@@ -433,7 +434,7 @@ public class RangeSlider extends View {
             }
         }
 
-        if (labelStyle == LabelStyle.NONE || activeThumb == THUMB_NONE) {
+        if (labelStyle!=LabelStyle.ALWAYS && labelStyle == LabelStyle.NONE || activeThumb == THUMB_NONE ) {
             return;
         }
 
